@@ -6,7 +6,7 @@ terraform {
     organization = "TestCognizant"
 
     workspaces {
-      prefix = "genesys_email_dev"
+      prefix = "genesys_email_"
     }
   }
 
