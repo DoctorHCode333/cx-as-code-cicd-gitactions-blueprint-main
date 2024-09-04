@@ -6,13 +6,14 @@ terraform {
     organization = "TestCognizant"
 
     workspaces {
-      prefix = "genesys_email_"
+      name = "genesys_email_dev"
     }
   }
 
   required_providers {
     genesyscloud = {
       source = "mypurecloud/genesyscloud"
+      version = "~> 1.47.0"
     }
   }
 }
