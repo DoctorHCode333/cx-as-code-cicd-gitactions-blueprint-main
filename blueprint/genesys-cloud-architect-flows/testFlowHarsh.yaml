@@ -1,82 +1,17 @@
 inboundCall:
-  name: testFlowharsh
+  name: testHar
   division: Home
-  startUpRef: "/inboundCall/tasks/task[Initial Task_176]"
+  startUpRef: "/inboundCall/menus/menu[Main Menu_10]"
   defaultLanguage: en-us
   supportedLanguages:
     en-us:
       defaultLanguageSkill:
         noValue: true
       textToSpeech:
-        Amazon Polly:
-          voice: Ruth-NTTS
+        defaultEngine:
+          defaultVoice: true
   initialGreeting:
-    tts: Welcome to ABC bank customer Servicing Department
-  variables:
-    - stringVariable:
-        name: Flow.Accountno
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.CBalance
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.Ccredit
-        initialValue:
-          noValue: true
-    - integerVariable:
-        name: Flow.Counter
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.creditcard
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.DBalance
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.DCBalance
-        initialValue:
-          noValue: true
-    - integerVariable:
-        name: Flow.DialogRetryCounter
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.Mbalance
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.MdueDate
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.MLastPayment
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.MNextPayAmt
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.MpayDate
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.PIN
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.retrycounter
-        initialValue:
-          noValue: true
-    - stringVariable:
-        name: Flow.SBalance
-        initialValue:
-          noValue: true
+    tts: Hello, this is the initial greeting.
   settingsActionDefaults:
     playAudioOnSilence:
       timeout:
@@ -126,7 +61,7 @@ inboundCall:
       lit:
         seconds: 10
     repeatCount:
-      lit: 0
+      lit: 3
   settingsPrompts:
     ensureAudioInPrompts: false
     promptMediaToValidate:
@@ -146,21 +81,20 @@ inboundCall:
       lit: 50
     asrCompanyDir: none
     asrEnabledOnFlow: true
-    suppressRecording: false
+    suppressRecording: true
   menus:
     - menu:
         name: Main Menu
         refId: Main Menu_10
         audio:
-          tts: Para Espanol, o prima nueve. For Spanish, press 9
+          tts: Press 1 to connect to customer support , press 9 to disconnect
         settingsMenu:
           extensionDialingMaxDelay:
             noValue: true
           listenForExtensionDialing:
             noValue: true
           menuSelectionTimeout:
-            lit:
-              seconds: 3
+            noValue: true
           repeatCount:
             noValue: true
         settingsSpeechRec:
@@ -173,1224 +107,162 @@ inboundCall:
           minConfidenceLevel:
             noValue: true
         choices:
-          - menuTask:
-              name: Spanish Input
+          - menuDisconnect:
+              name: Disconnect
               dtmf: digit_9
               globalDtmf: false
               globalSpeechRecTerms: false
-              task:
-                actions:
-                  - updateData:
-                      name: Update Data
-                      statements:
-                        - integer:
-                            variable: Flow.Counter
-                            value:
-                              lit: 0
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[CSR_392]"
           - menuTask:
-              name: No input
-              refId: No input_179
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - updateData:
-                      name: Update Data
-                      statements:
-                        - integer:
-                            variable: Flow.Counter
-                            value:
-                              lit: 0
-                  - setLanguage:
-                      name: Set Language
-                      languageValue:
-                        lit: en-us
-                      language: en-us
-                  - playAudio:
-                      name: Play Audio
-                      audio:
-                        tts: Please note that this call may be recorded for monitoring and compliance purposes.
-                  - jumpToMenu:
-                      name: Jump to Menu
-                      targetMenuRef: "/inboundCall/menus/menu[ABC Bank Main Menu_127]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - no input
-        defaultChildMenuRef: "./choices/menuTask[No input_179]"
-    - menu:
-        name: ABC Bank Main Menu
-        refId: ABC Bank Main Menu_127
-        audio:
-          exp: AudioPlaybackOptions(if(Flow.Counter == 0 , ToAudioTTS("Please tell me in own words, how I can help you. I can help you with things such as Account Information, Transaction History, Rewards, Fund Transfer, Change PIN, or To be added"),ToAudioTTS("Now, please tell me in own words, how I can help you. I can help you with things such as Account Information, Transaction History, Rewards, Fund Transfer, Change PIN, or To be added. If I have answered all your queries, you are free to hang up if you like to. Thanks")), true)
-        settingsMenu:
-          extensionDialingMaxDelay:
-            noValue: true
-          listenForExtensionDialing:
-            noValue: true
-          menuSelectionTimeout:
-            noValue: true
-          repeatCount:
-            noValue: true
-        settingsSpeechRec:
-          completeMatchTimeout:
-            noValue: true
-          incompleteMatchTimeout:
-            noValue: true
-          maxSpeechLengthTimeout:
-            noValue: true
-          minConfidenceLevel:
-            noValue: true
-        choices:
-          - menuTask:
-              name: Account Information
+              name: Customer Data
               dtmf: digit_1
               globalDtmf: false
               globalSpeechRecTerms: false
               task:
+                variables:
+                  - stringVariable:
+                      name: Task.CustomerEmail
+                      initialValue:
+                        noValue: true
+                      isInput: false
+                      isOutput: false
+                  - stringVariable:
+                      name: Task.CustomerFirstName
+                      initialValue:
+                        noValue: true
+                      isInput: false
+                      isOutput: false
+                  - stringVariable:
+                      name: Task.CustomerInput
+                      initialValue:
+                        noValue: true
+                      isInput: false
+                      isOutput: false
                 actions:
-                  - callTask:
-                      name: Call Task
-                      targetTaskRef: "/inboundCall/tasks/task[Authentication_229]"
-                  - updateData:
-                      name: Update Data
-                      statements:
-                        - integer:
-                            variable: Flow.DialogRetryCounter
-                            value:
-                              lit: 0
-                  - jumpToMenu:
-                      name: Jump to Menu
-                      targetMenuRef: "/inboundCall/menus/menu[Confirm Account Type_208]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Account Information
-                    - Account
-          - menuTask:
-              name: Transaction History
-              dtmf: digit_2
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - disconnect:
-                      name: Disconnect
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Transaction History
-          - menuTask:
-              name: Rewards
-              dtmf: digit_3
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - disconnect:
-                      name: Disconnect
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Rewards
-          - menuTask:
-              name: Fund Transfer
-              dtmf: digit_4
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - disconnect:
-                      name: Disconnect
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Fund Transfer
-          - menuTask:
-              name: Change PIN
-              dtmf: digit_5
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - disconnect:
-                      name: Disconnect
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Change Pin
-          - menuTask:
-              name: No_Input1
-              refId: No_Input1_218
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - decision:
-                      name: Decision
-                      condition:
-                        exp: Flow.Counter == 2
+                  - collectInput:
+                      name: Collect Input
+                      inputData:
+                        var: Task.CustomerInput
+                      digits:
+                        range:
+                          terminatingDtmf: "digit_#"
+                          min: 1
+                          max: 10
+                      interDigitTimeout:
+                        noValue: true
+                      noEntryTimeout:
+                        noValue: true
+                      inputAudio:
+                        tts: "Please  enter your registered phone number followed by  # key"
+                      includeTerminatingDtmfInResultData: false
+                      acceptJustStar:
+                        lit: false
+                      acceptJustPound:
+                        lit: false
+                      verificationType: individualDigits
                       outputs:
-                        "yes":
+                        success:
                           actions:
+                            - callData:
+                                name: Call Data Action
+                                processingPrompt:
+                                  noValue: true
+                                timeout:
+                                  lit:
+                                    minutes: 1
+                                category:
+                                  Salesforce Data Actions:
+                                    dataAction:
+                                      Get Contact By Phone Number:
+                                        inputs:
+                                          PHONE_NUMBER:
+                                            exp: Task.CustomerInput
+                                        successOutputs:
+                                          Id:
+                                            noValue: true
+                                          FirstName:
+                                            var: Task.CustomerFirstName
+                                          LastName:
+                                            noValue: true
+                                          Phone:
+                                            noValue: true
+                                          HomePhone:
+                                            noValue: true
+                                          MobilePhone:
+                                            noValue: true
+                                          OtherPhone:
+                                            noValue: true
+                                          Email:
+                                            var: Task.CustomerEmail
+                                          MailingStreet:
+                                            noValue: true
+                                          MailingCity:
+                                            noValue: true
+                                          MailingState:
+                                            noValue: true
+                                          MailingPostalCode:
+                                            noValue: true
+                                          MailingCountry:
+                                            noValue: true
+                                outputs:
+                                  success:
+                                    actions:
+                                      - setScreenPop:
+                                          name: Set Screen Pop
+                                          screenPopScript:
+                                            Salesforce script:
+                                              inputs:
+                                                Customer Input:
+                                                  lit: 0
+                                                First Name:
+                                                  exp: Task.CustomerFirstName
+                                                Customer Email:
+                                                  exp: Task.CustomerEmail
+                                      - transferToAcd:
+                                          name: Transfer to ACD
+                                          targetQueue:
+                                            lit:
+                                              name: " Customer Support"
+                                          preTransferAudio:
+                                            tts: Please wait for next available agent
+                                          failureTransferAudio:
+                                            tts: Error Please call back later
+                                          priority:
+                                            lit: 5
+                                          preferredAgents:
+                                            noValue: true
+                                          languageSkill:
+                                            noValue: true
+                                          failureOutputs:
+                                            errorType:
+                                              noValue: true
+                                            errorMessage:
+                                              noValue: true
+                                          outputs:
+                                            failure:
+                                              actions:
+                                                - disconnect:
+                                                    name: Disconnect
+                                  failure:
+                                    actions:
+                                      - playAudio:
+                                          name: Play Audio
+                                          audio:
+                                            tts: Sorry Call bak later
+                                      - disconnect:
+                                          name: Disconnect
+                                  timeout:
+                                    actions:
+                                      - playAudio:
+                                          name: Play Audio
+                                          audio:
+                                            tts: Sorry Call back later
+                                      - disconnect:
+                                          name: Disconnect
+                        failure:
+                          actions:
+                            - playAudio:
+                                name: Play Audio
+                                audio:
+                                  tts: Please Call back Later
                             - disconnect:
                                 name: Disconnect
-                        "no":
-                          actions:
-                            - updateData:
-                                name: Update Data
-                                statements:
-                                  - integer:
-                                      variable: Flow.Counter
-                                      value:
-                                        exp: Flow.Counter + 1
-                            - jumpToMenu:
-                                name: Jump to Menu
-                                targetMenuRef: "/inboundCall/menus/menu[ABC Bank Main Menu_127]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - No Input
-        defaultChildMenuRef: "./choices/menuTask[No_Input1_218]"
-    - menu:
-        name: Spanish Greeting
-        refId: Spanish Greeting_165
-        audio:
-          tts: "Welcome "
-        settingsMenu:
-          extensionDialingMaxDelay:
-            noValue: true
-          listenForExtensionDialing:
-            noValue: true
-          menuSelectionTimeout:
-            noValue: true
-          repeatCount:
-            noValue: true
-        settingsSpeechRec:
-          completeMatchTimeout:
-            noValue: true
-          incompleteMatchTimeout:
-            noValue: true
-          maxSpeechLengthTimeout:
-            noValue: true
-          minConfidenceLevel:
-            noValue: true
-        choices:
-          - menuTask:
-              name: No_Input2
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - disconnect:
-                      name: Disconnect
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - No Input
-    - menu:
-        name: Confirm Account Type
-        refId: Confirm Account Type_208
-        audio:
-          tts: What type of account are you calling about? Just say "Checking", "Savings", "Credit Card", "Debit Card", "Deposit", "Loan", or "Mortgage"?
-        settingsMenu:
-          extensionDialingMaxDelay:
-            noValue: true
-          listenForExtensionDialing:
-            noValue: true
-          menuSelectionTimeout:
-            noValue: true
-          repeatCount:
-            lit: 2
-        settingsSpeechRec:
-          completeMatchTimeout:
-            noValue: true
-          incompleteMatchTimeout:
-            noValue: true
-          maxSpeechLengthTimeout:
-            noValue: true
-          minConfidenceLevel:
-            noValue: true
-        choices:
-          - menuTask:
-              name: Checking
-              dtmf: digit_1
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[Task_Checking_310]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Checking
-          - menuTask:
-              name: Deposit
-              dtmf: digit_5
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[Task_Deposit_342]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Deposit
-          - menuTask:
-              name: Mortgage
-              dtmf: digit_6
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[Task_Mortgage_SLASH_Loan_360]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Mortgage
-                    - Loan
-          - menuTask:
-              name: Savings
-              dtmf: digit_2
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[Task_Savings_369]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Savings
-          - menuTask:
-              name: Credit Card
-              dtmf: digit_3
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[Task_CreditCard_324]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Credit Card
-          - menuTask:
-              name: Debit Card
-              dtmf: digit_4
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[Task_DebitCard_333]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Debit Card
-          - menuTask:
-              name: No_Input3
-              refId: No_Input3_264
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - updateData:
-                      name: Update Data
-                      statements:
-                        - integer:
-                            variable: Flow.DialogRetryCounter
-                            value:
-                              exp: Flow.DialogRetryCounter+1
-                  - decision:
-                      name: Decision
-                      condition:
-                        exp: Flow.DialogRetryCounter<=2
-                      outputs:
-                        "yes":
-                          actions:
-                            - jumpToMenu:
-                                name: Jump to Menu
-                                targetMenuRef: "/inboundCall/menus/menu[Confirm Account Type_208]"
-                        "no":
-                          actions:
-                            - transferToAcd:
-                                name: Transfer to ACD
-                                targetQueue:
-                                  lit:
-                                    name: Training1
-                                priority:
-                                  lit: 0
-                                preferredAgents:
-                                  noValue: true
-                                languageSkill:
-                                  noValue: true
-                                failureOutputs:
-                                  errorType:
-                                    noValue: true
-                                  errorMessage:
-                                    noValue: true
-                                outputs:
-                                  failure:
-                                    actions:
-                                      - disconnect:
-                                          name: Disconnect
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - noinput
-        defaultChildMenuRef: "./choices/menuTask[No_Input3_264]"
-    - menu:
-        name: Confirm Additional Info Choice
-        refId: Confirm Additional Info Choice_406
-        audio:
-          tts: Do you want me to repeat this information or you want to hear additional account information?
-        settingsMenu:
-          extensionDialingMaxDelay:
-            noValue: true
-          listenForExtensionDialing:
-            noValue: true
-          menuSelectionTimeout:
-            noValue: true
-          repeatCount:
-            noValue: true
-        settingsSpeechRec:
-          completeMatchTimeout:
-            noValue: true
-          incompleteMatchTimeout:
-            noValue: true
-          maxSpeechLengthTimeout:
-            noValue: true
-          minConfidenceLevel:
-            noValue: true
-        choices:
-          - menuTask:
-              name: Repeat Checking
-              dtmf: digit_1
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[Task_Checking_310]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Repeat
-                    - yes
-          - menuTask:
-              name: No_Input 1
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - updateData:
-                      name: Update Data
-                      statements:
-                        - integer:
-                            variable: Flow.DialogRetryCounter
-                            value:
-                              exp: Flow.DialogRetryCounter+1
-                  - decision:
-                      name: Decision
-                      condition:
-                        exp: Flow.DialogRetryCounter<=2
-                      outputs:
-                        "yes":
-                          actions:
-                            - jumpToMenu:
-                                name: Jump to Menu
-                                targetMenuRef: "/inboundCall/menus/menu[Confirm Additional Info Choice_406]"
-                        "no":
-                          actions:
-                            - transferToAcd:
-                                name: Transfer to ACD
-                                targetQueue:
-                                  lit:
-                                    name: Training1
-                                priority:
-                                  lit: 0
-                                preferredAgents:
-                                  noValue: true
-                                languageSkill:
-                                  noValue: true
-                                failureOutputs:
-                                  errorType:
-                                    noValue: true
-                                  errorMessage:
-                                    noValue: true
-                                outputs:
-                                  failure:
-                                    actions:
-                                      - disconnect:
-                                          name: Disconnect
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - noinput
-          - menuTask:
-              name: Additional Info
-              dtmf: digit_2
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              task:
-                actions:
-                  - playAudio:
-                      name: Play Audio
-                      audio:
-                        exp: AudioPlaybackOptions(Append(ToAudioTTS("Your interest rate is"), ToAudioTTS("6 percent")), true)
-                  - jumpToTask:
-                      name: Jump to Reusable Task
-                      targetTaskRef: "/inboundCall/tasks/task[Additional Info - Checking_423]"
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - Additional info
-                    - "additional "
-                    - info
-  tasks:
-    - task:
-        name: Account Info
-        refId: Account Info_35
-        variables:
-          - stringVariable:
-              name: Task.creditcard
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-        actions:
-          - playAudio:
-              name: Disclaimer
-              audio:
-                tts: This call may be monitored for quality purposes.
-          - transferToAcd:
-              name: Transfer to ACD
-              targetQueue:
-                lit:
-                  name: Training1
-              preTransferAudio:
-                tts: Please wait, while we transfer your call to our next availble agent.
-              failureTransferAudio:
-                tts: Sorry, we are unable to transfer your call.
-              priority:
-                lit: 0
-              preferredAgents:
-                noValue: true
-              languageSkill:
-                noValue: true
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
-              outputs:
-                failure:
-                  actions:
-                    - disconnect:
-                        name: Disconnect
-    - task:
-        name: Additional Info - Checking
-        refId: Additional Info - Checking_423
-        actions:
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Authentication
-        refId: Authentication_229
-        variables:
-          - integerVariable:
-              name: Task.AccountLoop
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.accountnumber
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.availblebalance
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.creditcard
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.customername
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.loan
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.phonenumber
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.pin
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-        actions:
-          - loop:
-              name: Loop
-              currentIndex:
-                var: Task.AccountLoop
-              loopCount:
-                lit: 3
-              outputs:
-                loop:
-                  actions:
-                    - collectInput:
-                        name: Collect Account Number
-                        inputData:
-                          var: Flow.Accountno
-                        digits:
-                          range:
-                            terminatingDtmf: "digit_#"
-                            min: 1
-                            max: 9
-                            includeTerminatingDtmfInResultData: true
-                        interDigitTimeout:
-                          noValue: true
-                        noEntryTimeout:
-                          noValue: true
-                        inputAudio:
-                          tts: Please enter your account number followed by hash
-                        acceptJustStar:
-                          lit: false
-                        acceptJustPound:
-                          lit: true
-                        verificationType: numeric
-                        outputs:
-                          success:
-                            actions:
-                              - dataTableLookup:
-                                  name: Data Table Lookup
-                                  lookupValue:
-                                    exp: Flow.Accountno
-                                  dataTable:
-                                    BFSI Customer DB:
-                                      foundOutputs:
-                                        PIN:
-                                          var: Flow.PIN
-                                        MBalance:
-                                          var: Flow.Mbalance
-                                        MLastPayAmt:
-                                          var: Flow.MLastPayment
-                                        MPayDate:
-                                          var: Flow.MpayDate
-                                        MNextPayAmt:
-                                          var: Flow.MNextPayAmt
-                                        MDueDate:
-                                          var: Flow.MdueDate
-                                        SBalance:
-                                          var: Flow.SBalance
-                                        CBalance:
-                                          var: Flow.CBalance
-                                        Ccredit:
-                                          var: Flow.Ccredit
-                                        DCBalance:
-                                          var: Flow.DCBalance
-                                        DBalance:
-                                          var: Flow.DBalance
-                                        IRate:
-                                          noValue: true
-                                      failureOutputs:
-                                        errorType:
-                                          noValue: true
-                                        errorMessage:
-                                          noValue: true
-                                  outputs:
-                                    found:
-                                      actions:
-                                        - playAudio:
-                                            name: Play Audio
-                                            audio:
-                                              tts: Please be aware that this information is as of the last business day.
-                                        - endTask:
-                                            name: End Task
-                                            outputPath:
-                                              name: default
-                                    notFound:
-                                      actions:
-                                        - playAudio:
-                                            name: Play Audio
-                                            audio:
-                                              tts: Sorry, record not found, please try again
-                                        - loopNext:
-                                            name: Next Loop
-                                    failure:
-                                      actions:
-                                        - playAudio:
-                                            name: Play Audio
-                                            audio:
-                                              tts: Sorry, unable to process further
-                          failure:
-                            actions:
-                              - loopNext:
-                                  name: Next Loop
-          - jumpToTask:
-              name: Jump to Reusable Task
-              targetTaskRef: "/inboundCall/tasks/task[CSR_392]"
-    - task:
-        name: CSR
-        refId: CSR_392
-        actions:
-          - playAudio:
-              name: Play Audio
-              audio:
-                tts: Transfering to Customer Service Representative
-          - transferToAcd:
-              name: Transfer to ACD
-              targetQueue:
-                lit:
-                  name: Training1
-              priority:
-                lit: 0
-              preferredAgents:
-                noValue: true
-              languageSkill:
-                noValue: true
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
-              outputs:
-                failure:
-                  actions:
-                    - disconnect:
-                        name: Disconnect
-    - task:
-        name: Fund
-        refId: Fund_195
-        variables:
-          - stringVariable:
-              name: Task.creditcard
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-        actions:
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Initial Task
-        refId: Initial Task_176
-        actions:
-          - jumpToMenu:
-              name: Jump to Menu
-              targetMenuRef: "/inboundCall/menus/menu[Main Menu_10]"
-    - task:
-        name: Pin
-        refId: Pin_200
-        variables:
-          - stringVariable:
-              name: Task.creditcard
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-        actions:
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Reward
-        refId: Reward_190
-        variables:
-          - stringVariable:
-              name: Task.creditcard
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-        actions:
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Task_Checking
-        refId: Task_Checking_310
-        actions:
-          - updateData:
-              name: Update Data
-              statements:
-                - integer:
-                    variable: Flow.DialogRetryCounter
-                    value:
-                      lit: 0
-          - playAudio:
-              name: Play Audio
-              audio:
-                exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current balance is"), ToAudioCurrency(MakeCurrency(ToDecimal(Flow.CBalance), "USD"))), true)
-          - jumpToMenu:
-              name: Jump to Menu
-              targetMenuRef: "/inboundCall/menus/menu[Confirm Additional Info Choice_406]"
-    - task:
-        name: Task_CreditCard
-        refId: Task_CreditCard_324
-        actions:
-          - callTask:
-              name: Call Task
-              targetTaskRef: "/inboundCall/tasks/task[Authentication_229]"
-          - dataTableLookup:
-              name: Data Table Lookup
-              lookupValue:
-                exp: Flow.Accountno
-              dataTable:
-                BFSI Customer DB:
-                  foundOutputs:
-                    PIN:
-                      noValue: true
-                    MBalance:
-                      noValue: true
-                    MLastPayAmt:
-                      noValue: true
-                    MPayDate:
-                      noValue: true
-                    MNextPayAmt:
-                      noValue: true
-                    MDueDate:
-                      noValue: true
-                    SBalance:
-                      noValue: true
-                    CBalance:
-                      var: Flow.CBalance
-                    Ccredit:
-                      noValue: true
-                    DCBalance:
-                      noValue: true
-                    DBalance:
-                      noValue: true
-                    IRate:
-                      noValue: true
-                  failureOutputs:
-                    errorType:
-                      noValue: true
-                    errorMessage:
-                      noValue: true
-              outputs:
-                found:
-                  actions:
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current balance is"), ToAudioTTS(Flow.Ccredit, Format.String.playChars)), true)
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          tts: Do you want me to repeat this information or you want to hear additional account information?
-                    - decision:
-                        name: Decision
-                        condition:
-                          lit: true
-                        outputs:
-                          "yes":
-                            actions:
-                              - jumpToMenu:
-                                  name: Jump to Menu
-                                  targetMenuRef: "/inboundCall/menus/menu[Confirm Account Type_208]"
-                          "no":
-                            actions:
-                              - jumpToTask:
-                                  name: Jump to Reusable Task
-                                  targetTaskRef: "/inboundCall/tasks/task[Account Info_35]"
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Task_DebitCard
-        refId: Task_DebitCard_333
-        actions:
-          - callTask:
-              name: Call Task
-              targetTaskRef: "/inboundCall/tasks/task[Authentication_229]"
-          - dataTableLookup:
-              name: Data Table Lookup
-              lookupValue:
-                exp: Flow.Accountno
-              dataTable:
-                BFSI Customer DB:
-                  foundOutputs:
-                    PIN:
-                      noValue: true
-                    MBalance:
-                      noValue: true
-                    MLastPayAmt:
-                      noValue: true
-                    MPayDate:
-                      noValue: true
-                    MNextPayAmt:
-                      noValue: true
-                    MDueDate:
-                      noValue: true
-                    SBalance:
-                      noValue: true
-                    CBalance:
-                      var: Flow.CBalance
-                    Ccredit:
-                      noValue: true
-                    DCBalance:
-                      noValue: true
-                    DBalance:
-                      noValue: true
-                    IRate:
-                      noValue: true
-                  failureOutputs:
-                    errorType:
-                      noValue: true
-                    errorMessage:
-                      noValue: true
-              outputs:
-                found:
-                  actions:
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current balance is"), ToAudioTTS(Flow.DCBalance, Format.String.playChars)), true)
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          tts: Do you want me to repeat this information or you want to hear additional account information?
-                    - decision:
-                        name: Decision
-                        condition:
-                          lit: true
-                        outputs:
-                          "yes":
-                            actions:
-                              - jumpToMenu:
-                                  name: Jump to Menu
-                                  targetMenuRef: "/inboundCall/menus/menu[Confirm Account Type_208]"
-                          "no":
-                            actions:
-                              - jumpToTask:
-                                  name: Jump to Reusable Task
-                                  targetTaskRef: "/inboundCall/tasks/task[Account Info_35]"
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Task_Deposit
-        refId: Task_Deposit_342
-        actions:
-          - callTask:
-              name: Call Task
-              targetTaskRef: "/inboundCall/tasks/task[Authentication_229]"
-          - dataTableLookup:
-              name: Data Table Lookup
-              lookupValue:
-                exp: Flow.Accountno
-              dataTable:
-                BFSI Customer DB:
-                  foundOutputs:
-                    PIN:
-                      noValue: true
-                    MBalance:
-                      noValue: true
-                    MLastPayAmt:
-                      noValue: true
-                    MPayDate:
-                      noValue: true
-                    MNextPayAmt:
-                      noValue: true
-                    MDueDate:
-                      noValue: true
-                    SBalance:
-                      noValue: true
-                    CBalance:
-                      var: Flow.CBalance
-                    Ccredit:
-                      noValue: true
-                    DCBalance:
-                      noValue: true
-                    DBalance:
-                      noValue: true
-                    IRate:
-                      noValue: true
-                  failureOutputs:
-                    errorType:
-                      noValue: true
-                    errorMessage:
-                      noValue: true
-              outputs:
-                found:
-                  actions:
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current balance is"), ToAudioTTS(Flow.DBalance, Format.String.playChars)), true)
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          tts: Do you want me to repeat this information or you want to hear additional account information?
-                    - decision:
-                        name: Decision
-                        condition:
-                          lit: true
-                        outputs:
-                          "yes":
-                            actions:
-                              - jumpToMenu:
-                                  name: Jump to Menu
-                                  targetMenuRef: "/inboundCall/menus/menu[Confirm Account Type_208]"
-                          "no":
-                            actions:
-                              - jumpToTask:
-                                  name: Jump to Reusable Task
-                                  targetTaskRef: "/inboundCall/tasks/task[Account Info_35]"
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Task_Loan
-        refId: Task_Loan_351
-        actions:
-          - callTask:
-              name: Call Task
-              targetTaskRef: "/inboundCall/tasks/task[Authentication_229]"
-          - dataTableLookup:
-              name: Data Table Lookup
-              lookupValue:
-                exp: Flow.Accountno
-              dataTable:
-                BFSI Customer DB:
-                  foundOutputs:
-                    PIN:
-                      noValue: true
-                    MBalance:
-                      noValue: true
-                    MLastPayAmt:
-                      noValue: true
-                    MPayDate:
-                      noValue: true
-                    MNextPayAmt:
-                      noValue: true
-                    MDueDate:
-                      noValue: true
-                    SBalance:
-                      noValue: true
-                    CBalance:
-                      var: Flow.CBalance
-                    Ccredit:
-                      noValue: true
-                    DCBalance:
-                      noValue: true
-                    DBalance:
-                      noValue: true
-                    IRate:
-                      noValue: true
-                  failureOutputs:
-                    errorType:
-                      noValue: true
-                    errorMessage:
-                      noValue: true
-              outputs:
-                found:
-                  actions:
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current balance is"), ToAudioTTS(Flow.CBalance, Format.String.playChars)), true)
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          tts: Do you want me to repeat this information or you want to hear additional account information?
-                    - decision:
-                        name: Decision
-                        condition:
-                          lit: true
-                        outputs:
-                          "yes":
-                            actions:
-                              - jumpToMenu:
-                                  name: Jump to Menu
-                                  targetMenuRef: "/inboundCall/menus/menu[Confirm Account Type_208]"
-                          "no":
-                            actions:
-                              - jumpToTask:
-                                  name: Jump to Reusable Task
-                                  targetTaskRef: "/inboundCall/tasks/task[Account Info_35]"
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Task_Mortgage/Loan
-        refId: Task_Mortgage_SLASH_Loan_360
-        actions:
-          - callTask:
-              name: Call Task
-              targetTaskRef: "/inboundCall/tasks/task[Authentication_229]"
-          - dataTableLookup:
-              name: Data Table Lookup
-              lookupValue:
-                exp: Flow.Accountno
-              dataTable:
-                BFSI Customer DB:
-                  foundOutputs:
-                    PIN:
-                      noValue: true
-                    MBalance:
-                      noValue: true
-                    MLastPayAmt:
-                      noValue: true
-                    MPayDate:
-                      noValue: true
-                    MNextPayAmt:
-                      noValue: true
-                    MDueDate:
-                      noValue: true
-                    SBalance:
-                      noValue: true
-                    CBalance:
-                      var: Flow.CBalance
-                    Ccredit:
-                      noValue: true
-                    DCBalance:
-                      noValue: true
-                    DBalance:
-                      noValue: true
-                    IRate:
-                      noValue: true
-                  failureOutputs:
-                    errorType:
-                      noValue: true
-                    errorMessage:
-                      noValue: true
-              outputs:
-                found:
-                  actions:
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current balance is"), ToAudioTTS(Flow.Mbalance, Format.String.playChars)), true)
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          tts: Do you want me to repeat this information or you want to hear additional account information?
-                    - decision:
-                        name: Decision
-                        condition:
-                          lit: true
-                        outputs:
-                          "yes":
-                            actions:
-                              - jumpToMenu:
-                                  name: Jump to Menu
-                                  targetMenuRef: "/inboundCall/menus/menu[Confirm Account Type_208]"
-                          "no":
-                            actions:
-                              - jumpToTask:
-                                  name: Jump to Reusable Task
-                                  targetTaskRef: "/inboundCall/tasks/task[Account Info_35]"
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Task_Savings
-        refId: Task_Savings_369
-        actions:
-          - callTask:
-              name: Call Task
-              targetTaskRef: "/inboundCall/tasks/task[Authentication_229]"
-          - dataTableLookup:
-              name: Data Table Lookup
-              lookupValue:
-                exp: Flow.Accountno
-              dataTable:
-                BFSI Customer DB:
-                  foundOutputs:
-                    PIN:
-                      noValue: true
-                    MBalance:
-                      noValue: true
-                    MLastPayAmt:
-                      noValue: true
-                    MPayDate:
-                      noValue: true
-                    MNextPayAmt:
-                      noValue: true
-                    MDueDate:
-                      noValue: true
-                    SBalance:
-                      noValue: true
-                    CBalance:
-                      var: Flow.CBalance
-                    Ccredit:
-                      noValue: true
-                    DCBalance:
-                      noValue: true
-                    DBalance:
-                      noValue: true
-                    IRate:
-                      noValue: true
-                  failureOutputs:
-                    errorType:
-                      noValue: true
-                    errorMessage:
-                      noValue: true
-              outputs:
-                found:
-                  actions:
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current balance is"), ToAudioTTS(Flow.SBalance, Format.String.playChars)), true)
-                    - playAudio:
-                        name: Play Audio
-                        audio:
-                          tts: Do you want me to repeat this information or you want to hear additional account information?
-                    - decision:
-                        name: Decision
-                        condition:
-                          lit: true
-                        outputs:
-                          "yes":
-                            actions:
-                              - jumpToMenu:
-                                  name: Jump to Menu
-                                  targetMenuRef: "/inboundCall/menus/menu[Confirm Account Type_208]"
-                          "no":
-                            actions:
-                              - jumpToTask:
-                                  name: Jump to Reusable Task
-                                  targetTaskRef: "/inboundCall/tasks/task[Account Info_35]"
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: Transaction
-        refId: Transaction_185
-        variables:
-          - stringVariable:
-              name: Task.creditcard
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-        actions:
-          - disconnect:
-              name: Disconnect
