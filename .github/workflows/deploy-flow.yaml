@@ -47,10 +47,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/genesys-cloud-dev-tools
-      - uses: hashicorp/setup-terraform@v1
-        with:
-          cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
-      - uses: ./.github/actions/genesys-cloud-apply-terraform
+      # - uses: hashicorp/setup-terraform@v1
+      #   with:
+      #     cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+      # - uses: ./.github/actions/genesys-cloud-apply-terraform
       - uses: ./.github/actions/genesys-cloud-publish-archy-flow
         with:
           architect-flow-path: $GITHUB_WORKSPACE/blueprint/genesys-cloud-architect-flows/testFlowHarsh.yaml
