@@ -41,13 +41,13 @@ module "classifier_queues" {
 }
 
 
-module "classifier_email_routes" {
-  source               = "./modules/email_routes"
-  genesys_email_domain = var.genesys_email_domain
-}
+# module "classifier_email_routes" {
+#   source               = "./modules/email_routes"
+#   genesys_email_domain = var.genesys_email_domain
+# }
 
-module "classifier_data_actions" {
-  source             = "./modules/data_actions"
-  classifier_url     = var.classifier_url
-  classifier_api_key = var.classifier_api_key
-}
+# module "classifier_data_actions" {
+#   source             = "./modules/data_actions"
+#   classifier_url     = var.classifier_url
+#   classifier_api_key = var.classifier_api_key
+# }
