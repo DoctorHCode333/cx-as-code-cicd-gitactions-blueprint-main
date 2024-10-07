@@ -1,18 +1,50 @@
 inboundCall:
-  name: testHar
-  description: flow for abc
+  name: testHarsh
   division: Home
-  startUpRef: "/inboundCall/tasks/task[New Task 2_27]"
+  startUpRef: "/inboundCall/tasks/task[New Task 2_19]"
   defaultLanguage: en-us
   supportedLanguages:
     en-us:
       defaultLanguageSkill:
         noValue: true
       textToSpeech:
-        Amazon Polly:
-          voice: Joanna
+        defaultEngine:
+          defaultVoice: true
   initialGreeting:
-    tts: Hello  , welcome to call flow
+    tts: Hello, this is the initial greeting.
+  variables:
+    - stringVariable:
+        name: Flow.AccountBalance
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.associate
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.associatenumber
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.Input
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.name
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.place
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.role
+        initialValue:
+          noValue: true
+    - stringVariable:
+        name: Flow.TNnum
+        initialValue:
+          noValue: true
   settingsActionDefaults:
     playAudioOnSilence:
       timeout:
@@ -24,8 +56,7 @@ inboundCall:
           seconds: 40
     callData:
       processingPrompt:
-        lit:
-          name: PromptSystem.processing
+        noValue: true
     collectInput:
       noEntryTimeout:
         lit:
@@ -89,7 +120,7 @@ inboundCall:
         name: Main Menu
         refId: Main Menu_10
         audio:
-          tts: Press 1 to Continue
+          tts: You are at the Main Menu, press 9 to disconnect
         settingsMenu:
           extensionDialingMaxDelay:
             noValue: true
@@ -111,249 +142,280 @@ inboundCall:
         choices:
           - menuDisconnect:
               name: Disconnect
-              refId: Disconnect_11
               dtmf: digit_9
               globalDtmf: false
               globalSpeechRecTerms: false
-          - menuTransferToAcd:
-              name: Transfer to ACD
+    - menu:
+        name: starting menu
+        refId: starting menu_29
+        audio:
+          tts: "Welcome to ABC , in order to hear account balance press 1, Account information press 2 "
+        settingsMenu:
+          extensionDialingMaxDelay:
+            noValue: true
+          listenForExtensionDialing:
+            noValue: true
+          menuSelectionTimeout:
+            noValue: true
+          repeatCount:
+            noValue: true
+        settingsSpeechRec:
+          completeMatchTimeout:
+            noValue: true
+          incompleteMatchTimeout:
+            noValue: true
+          maxSpeechLengthTimeout:
+            noValue: true
+          minConfidenceLevel:
+            noValue: true
+        choices:
+          - menuTask:
+              name: Account balance
               dtmf: digit_1
               globalDtmf: false
               globalSpeechRecTerms: false
-              targetQueue:
-                lit:
-                  name: abc
-              priority:
-                lit: 7
-              preferredAgents:
-                noValue: true
-              languageSkill:
-                noValue: true
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
+              task:
+                actions:
+                  - callTask:
+                      name: Call Task
+                      targetTaskRef: "/inboundCall/tasks/task[Account balance_34]"
+                      outputs:
+                        default:
+                          actions:
+                            - updateData:
+                                name: Update Data
+                                statements:
+                                  - string:
+                                      variable: Flow.AccountBalance
+                                      value:
+                                        exp: Flow.Account
+                            - setParticipantData:
+                                name: Set Participant Data
+                                attributes:
+                                  - attribute:
+                                      name:
+                                        lit: AccountBalance
+                                      value:
+                                        exp: Flow.AccountBalance
+                            - getParticipantData:
+                                name: Get Participant Data
+                                attributes:
+                                  - attribute:
+                                      name:
+                                        lit: AccountBalance
+                                      variable: Flow.AccountBalance
+                            - playAudio:
+                                name: Play Audio
               speechRecTerms:
                 en-us:
                   terms:
-                    - connect
-        defaultChildMenuRef: "./choices/menuDisconnect[Disconnect_11]"
+                    - Balance
+                    - yes
+                    - right
+          - menuTask:
+              name: Account information
+              dtmf: digit_2
+              globalDtmf: false
+              globalSpeechRecTerms: false
   tasks:
     - task:
         name: New Task 1
-        refId: New Task 1_13
-        variables:
-          - stringVariable:
-              name: Task.Amount
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - currencyVariable:
-              name: Task.Currency
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - decimalVariable:
-              name: Task.Currencyvalue
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.Currencyvalue1
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.group
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.intent
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
+        refId: New Task 1_12
         actions:
-          - updateData:
-              name: Update Data
-              statements:
-                - string:
-                    variable: Task.group
-                    value:
-                      lit: St Louis County
-          - playAudio:
-              name: Play Audio
-              audio:
-                exp: AudioPlaybackOptions(Append(ToAudioTTS(Task.group), ToAudioBlank(500), ToAudioTTS(Task.group), ToAudioBlank(500), ToAudioTTS(Task.group)), true)
-          - callBotFlow:
-              name: Call Bot Flow
-              inputText:
+          - collectInput:
+              name: Collect Input
+              inputData:
+                var: Flow.associatenumber
+              digits:
+                range:
+                  min: 1
+                  max: 20
+              interDigitTimeout:
                 noValue: true
-              exitReason:
-                noValue: true
-              intent:
-                var: Task.intent
-              botFlow:
-                Deletelater:
-                  ver_latestPublished:
-                    inputs:
-                      Slot.billnumber1:
-                        noValue: true
-                      Slot.pizzaslot1:
-                        noValue: true
-                    outputs:
-                      Slot.billnumber1:
-                        noValue: true
-                      Slot.pizzaslot1:
-                        noValue: true
-          - disconnect:
-              name: Disconnect
-          - setScreenPop:
-              name: Set Screen Pop
-              screenPopScript:
-                delete_chetha:
-                  inputs:
-                    Dynamic:
-                      lit: "https://help.mypurecloud.com/articles/web-page-script-component/"
-          - transferToAcd:
-              name: Transfer to ACD
-              targetQueue:
+              noEntryTimeout:
                 lit:
-                  name: TestQueue
-              priority:
-                lit: 0
-              preferredAgents:
-                noValue: true
-              languageSkill:
-                noValue: true
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
+                  seconds: 10
+              inputAudio:
+                tts: please enter the associate number
+              acceptJustStar:
+                lit: false
+              acceptJustPound:
+                lit: false
+              verificationType: none
               outputs:
+                success:
+                  actions:
+                    - updateData:
+                        name: Update Data
+                        statements:
+                          - string:
+                              variable: Flow.associate
+                              value:
+                                exp: Flow.associatenumber
+                    - setParticipantData:
+                        name: Set Participant Data
+                        attributes:
+                          - attribute:
+                              name:
+                                lit: associate
+                              value:
+                                exp: Flow.associate
+                    - dataTableLookup:
+                        name: Data Table Lookup
+                        lookupValue:
+                          exp: Flow.associatenumber
+                        dataTable:
+                          Associate_Table:
+                            foundOutputs:
+                              Name:
+                                var: Flow.name
+                              place:
+                                var: Flow.place
+                              role:
+                                var: Flow.role
+                            failureOutputs:
+                              errorType:
+                                noValue: true
+                              errorMessage:
+                                noValue: true
+                        outputs:
+                          found:
+                            actions:
+                              - transferToAcd:
+                                  name: Transfer to ACD
+                                  targetQueue:
+                                    lit:
+                                      name: Test_queue1
+                                  acdSkills:
+                                    - acdSkill:
+                                        lit:
+                                          name: Account Information
+                                    - acdSkill:
+                                        lit:
+                                          name: Account Balance
+                                  overrideInQueueFlow:
+                                    name: abcd
+                                  priority:
+                                    lit: 0
+                                  preferredAgents:
+                                    noValue: true
+                                  languageSkill:
+                                    noValue: true
+                                  failureOutputs:
+                                    errorType:
+                                      noValue: true
+                                    errorMessage:
+                                      noValue: true
                 failure:
                   actions:
-                    - disconnect:
-                        name: Disconnect
-          - updateData:
-              name: Update Data
-              statements:
-                - currency:
-                    variable: Task.Currency
-                    value:
-                      exp: MakeCurrency(10.50, "USD")
-                - string:
-                    variable: Task.Currencyvalue1
-                    value:
-                      lit: "105.10"
-                - string:
-                    variable: Task.Amount
-                    value:
-                      exp: Split(Task.Currencyvalue1,".")[0]
-          - playAudio:
-              name: Play Audio
-              audio:
-                exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current values is"), ToAudioBlank(250), ToAudioTTS(Task.Amount), ToAudioTTS("Dollars")), true)
-          - disconnect:
-              name: Disconnect
-          - transferToAcd:
-              name: Transfer to ACD
-              targetQueue:
-                lit:
-                  name: abc
-              priority:
-                lit: 0
-              preferredAgents:
-                noValue: true
-              languageSkill:
-                noValue: true
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
+                    - evaluateScheduleGroup:
+                        name: Evaluate Schedule Group
+                        inServiceSchedules:
+                          noValue: true
+                        evaluate:
+                          now: true
+                        scheduleGroup:
+                          lit:
+                            name: MToF Business Hours
+                          name: MToF Business Hours
+                        emergencyGroup:
+                          lit:
+                            name: Emergency_Test
+                          name: Emergency_Test
           - disconnect:
               name: Disconnect
     - task:
         name: New Task 2
-        refId: New Task 2_27
-        variables:
-          - stringVariable:
-              name: Task.intent
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
+        refId: New Task 2_19
         actions:
-          - setScreenPop:
-              name: Set Screen Pop
-              screenPopScript:
-                TestScript:
-                  inputs:
-                    CustomerName:
-                      lit: ""
-          - transferToFlowSecure:
-              name: Transfer to Secure Flow
-              targetFlow:
-                name: AgentSecureCallFlow
-              connectTimeout:
+          - collectInput:
+              name: Collect Input
+              inputData:
+                var: Flow.Input
+              digits:
+                range:
+                  min: 1
+                  max: 20
+              interDigitTimeout:
                 noValue: true
-              invocationData:
-                lit: ""
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
-          - callBotFlow:
-              name: Call Bot Flow
-              inputText:
+              noEntryTimeout:
                 noValue: true
-              exitReason:
-                noValue: true
-              intent:
-                var: Task.intent
-              botFlow:
-                Deletelater:
-                  ver_latestPublished:
-                    inputs:
-                      Slot.billnumber1:
-                        noValue: true
-                      Slot.pizzaslot1:
-                        noValue: true
-                    outputs:
-                      Slot.billnumber1:
-                        noValue: true
-                      Slot.pizzaslot1:
-                        noValue: true
-          - switch:
-              name: Switch
-              evaluate:
-                firstTrue:
-                  cases:
-                    - case:
-                        value:
-                          exp: Task.intent == "Billing"
-                        actions:
-                          - playAudio:
-                              name: Play Audio
-                              audio:
-                                tts: you are in billing
-                    - case:
-                        value:
-                          exp: Task.intent == "Pizza"
-                        actions:
-                          - playAudio:
-                              name: Play Audio
-                              audio:
-                                tts: you are in Pizza
+              inputAudio:
+                tts: enter the phone number to call sane number  press 1 or different number press 2
+              acceptJustStar:
+                lit: false
+              acceptJustPound:
+                lit: false
+              verificationType: none
+              outputs:
+                success:
+                  actions:
+                    - switch:
+                        name: Switch
+                        evaluate:
+                          firstTrue:
+                            cases:
+                              - case:
+                                  value:
+                                    exp: Flow.Input == "1"
+                                  actions:
+                                    - createCallback:
+                                        name: Create Callback
+                                        queue:
+                                          lit:
+                                            name: Test_queue1
+                                        callbackNumber:
+                                          exp: ToPhoneNumber(Call.Ani)
+                                        calleeName:
+                                          noValue: true
+                                        callbackScript:
+                                          Default Callback Script:
+                                            none: true
+                                    - disconnect:
+                                        name: Disconnect
+                              - case:
+                                  value:
+                                    exp: Flow.Input == "2"
+                                  actions:
+                                    - collectInput:
+                                        name: Collect Input
+                                        inputData:
+                                          var: Flow.TNnum
+                                        digits:
+                                          range:
+                                            min: 1
+                                            max: 20
+                                        interDigitTimeout:
+                                          noValue: true
+                                        noEntryTimeout:
+                                          lit:
+                                            seconds: 10
+                                        inputAudio:
+                                          tts: Enter the number you for a call back
+                                        acceptJustStar:
+                                          lit: false
+                                        acceptJustPound:
+                                          lit: false
+                                        verificationType: none
+                                        outputs:
+                                          success:
+                                            actions:
+                                              - createCallback:
+                                                  name: Create Callback
+                                                  queue:
+                                                    lit:
+                                                      name: Test_queue1
+                                                  callbackNumber:
+                                                    exp: ToPhoneNumber(Flow.TNnum)
+                                                  calleeName:
+                                                    noValue: true
+                                                  callbackScript:
+                                                    Default Callback Script:
+                                                      none: true
+                                              - disconnect:
+                                                  name: Disconnect
           - disconnect:
               name: Disconnect
+    - task:
+        name: Account balance
+        refId: Account balance_34
