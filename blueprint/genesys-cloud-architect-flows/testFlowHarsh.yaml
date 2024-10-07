@@ -1,18 +1,23 @@
 inboundCall:
-  name: testHarsh
-  description: flow for abc
+  name: TestHash
+  description: Basic Inbound Flow
   division: Home
-  startUpRef: "/inboundCall/tasks/task[New Task 2_27]"
+  startUpRef: "/inboundCall/tasks/task[New Task 1_12]"
   defaultLanguage: en-us
   supportedLanguages:
     en-us:
       defaultLanguageSkill:
         noValue: true
       textToSpeech:
-        Amazon Polly:
-          voice: Joanna
+        defaultEngine:
+          defaultVoice: true
   initialGreeting:
-    tts: Hello  , welcome to call flow
+    tts: Hello, Welcome to Cognizant Technology.
+  variables:
+    - stringVariable:
+        name: Flow.InputData
+        initialValue:
+          noValue: true
   settingsActionDefaults:
     playAudioOnSilence:
       timeout:
@@ -24,8 +29,7 @@ inboundCall:
           seconds: 40
     callData:
       processingPrompt:
-        lit:
-          name: PromptSystem.processing
+        noValue: true
     collectInput:
       noEntryTimeout:
         lit:
@@ -83,13 +87,13 @@ inboundCall:
       lit: 50
     asrCompanyDir: none
     asrEnabledOnFlow: true
-    suppressRecording: false
+    suppressRecording: true
   menus:
     - menu:
         name: Main Menu
         refId: Main Menu_10
         audio:
-          tts: Press 1 to Continue
+          tts: You are at the Main Menu, press 9 to disconnect
         settingsMenu:
           extensionDialingMaxDelay:
             noValue: true
@@ -111,249 +115,111 @@ inboundCall:
         choices:
           - menuDisconnect:
               name: Disconnect
-              refId: Disconnect_11
               dtmf: digit_9
               globalDtmf: false
               globalSpeechRecTerms: false
-          - menuTransferToAcd:
-              name: Transfer to ACD
-              dtmf: digit_1
-              globalDtmf: false
-              globalSpeechRecTerms: false
-              targetQueue:
-                lit:
-                  name: abc
-              priority:
-                lit: 7
-              preferredAgents:
-                noValue: true
-              languageSkill:
-                noValue: true
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
-              speechRecTerms:
-                en-us:
-                  terms:
-                    - connect
-        defaultChildMenuRef: "./choices/menuDisconnect[Disconnect_11]"
   tasks:
     - task:
         name: New Task 1
-        refId: New Task 1_13
-        variables:
-          - stringVariable:
-              name: Task.Amount
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - currencyVariable:
-              name: Task.Currency
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - decimalVariable:
-              name: Task.Currencyvalue
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.Currencyvalue1
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.group
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-          - stringVariable:
-              name: Task.intent
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
+        refId: New Task 1_12
         actions:
-          - updateData:
-              name: Update Data
-              statements:
-                - string:
-                    variable: Task.group
-                    value:
-                      lit: St Louis County
-          - playAudio:
-              name: Play Audio
-              audio:
-                exp: AudioPlaybackOptions(Append(ToAudioTTS(Task.group), ToAudioBlank(500), ToAudioTTS(Task.group), ToAudioBlank(500), ToAudioTTS(Task.group)), true)
-          - callBotFlow:
-              name: Call Bot Flow
-              inputText:
+          - collectInput:
+              name: Collect Input
+              inputData:
+                var: Flow.InputData
+              digits:
+                range:
+                  min: 1
+                  max: 3
+              interDigitTimeout:
                 noValue: true
-              exitReason:
+              noEntryTimeout:
                 noValue: true
-              intent:
-                var: Task.intent
-              botFlow:
-                Deletelater:
-                  ver_latestPublished:
-                    inputs:
-                      Slot.billnumber1:
-                        noValue: true
-                      Slot.pizzaslot1:
-                        noValue: true
-                    outputs:
-                      Slot.billnumber1:
-                        noValue: true
-                      Slot.pizzaslot1:
-                        noValue: true
-          - disconnect:
-              name: Disconnect
-          - setScreenPop:
-              name: Set Screen Pop
-              screenPopScript:
-                delete_chetha:
-                  inputs:
-                    Dynamic:
-                      lit: "https://help.mypurecloud.com/articles/web-page-script-component/"
-          - transferToAcd:
-              name: Transfer to ACD
-              targetQueue:
-                lit:
-                  name: TestQueue
-              priority:
-                lit: 0
-              preferredAgents:
-                noValue: true
-              languageSkill:
-                noValue: true
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
+              inputAudio:
+                tts: Please press 1 for HR, press 2 for IT Support and press 3 if you want to talk to an agent. For returning to main menu press star
+              acceptJustStar:
+                lit: true
+              acceptJustPound:
+                lit: false
+              verificationType: none
               outputs:
+                success:
+                  actions:
+                    - switch:
+                        name: Switch
+                        evaluate:
+                          firstTrue:
+                            cases:
+                              - case:
+                                  value:
+                                    exp: Flow.InputData=="1"
+                                  actions:
+                                    - transferToAcd:
+                                        name: Transfer to ACD
+                                        targetQueue:
+                                          lit:
+                                            name: HR
+                                        priority:
+                                          lit: 0
+                                        preferredAgents:
+                                          noValue: true
+                                        languageSkill:
+                                          noValue: true
+                                        failureOutputs:
+                                          errorType:
+                                            noValue: true
+                                          errorMessage:
+                                            noValue: true
+                              - case:
+                                  value:
+                                    exp: Flow.InputData=="2"
+                                  actions:
+                                    - transferToAcd:
+                                        name: Transfer to ACD
+                                        targetQueue:
+                                          lit:
+                                            name: IT
+                                        priority:
+                                          lit: 0
+                                        preferredAgents:
+                                          noValue: true
+                                        languageSkill:
+                                          noValue: true
+                                        failureOutputs:
+                                          errorType:
+                                            noValue: true
+                                          errorMessage:
+                                            noValue: true
+                              - case:
+                                  value:
+                                    exp: Flow.InputData=="3"
+                                  actions:
+                                    - transferToAcd:
+                                        name: Transfer to ACD
+                                        targetQueue:
+                                          lit:
+                                            name: Amita_Queue
+                                        priority:
+                                          lit: 0
+                                        preferredAgents:
+                                          noValue: true
+                                        languageSkill:
+                                          noValue: true
+                                        failureOutputs:
+                                          errorType:
+                                            noValue: true
+                                          errorMessage:
+                                            noValue: true
+                              - case:
+                                  value:
+                                    exp: Flow.InputData=="*"
+                                  actions:
+                                    - jumpToTask:
+                                        name: Jump to Reusable Task
+                                        targetTaskRef: "/inboundCall/tasks/task[New Task 1_12]"
                 failure:
                   actions:
                     - disconnect:
                         name: Disconnect
-          - updateData:
-              name: Update Data
-              statements:
-                - currency:
-                    variable: Task.Currency
-                    value:
-                      exp: MakeCurrency(10.50, "USD")
-                - string:
-                    variable: Task.Currencyvalue1
-                    value:
-                      lit: "105.10"
-                - string:
-                    variable: Task.Amount
-                    value:
-                      exp: Split(Task.Currencyvalue1,".")[0]
-          - playAudio:
-              name: Play Audio
-              audio:
-                exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current values is"), ToAudioBlank(250), ToAudioTTS(Task.Amount), ToAudioTTS("Dollars")), true)
-          - disconnect:
-              name: Disconnect
-          - transferToAcd:
-              name: Transfer to ACD
-              targetQueue:
-                lit:
-                  name: abc
-              priority:
-                lit: 0
-              preferredAgents:
-                noValue: true
-              languageSkill:
-                noValue: true
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
-          - disconnect:
-              name: Disconnect
-    - task:
-        name: New Task 2
-        refId: New Task 2_27
-        variables:
-          - stringVariable:
-              name: Task.intent
-              initialValue:
-                noValue: true
-              isInput: false
-              isOutput: false
-        actions:
-          - setScreenPop:
-              name: Set Screen Pop
-              screenPopScript:
-                TestScript:
-                  inputs:
-                    CustomerName:
-                      lit: ""
-          - transferToFlowSecure:
-              name: Transfer to Secure Flow
-              targetFlow:
-                name: AgentSecureCallFlow
-              connectTimeout:
-                noValue: true
-              invocationData:
-                lit: ""
-              failureOutputs:
-                errorType:
-                  noValue: true
-                errorMessage:
-                  noValue: true
-          - callBotFlow:
-              name: Call Bot Flow
-              inputText:
-                noValue: true
-              exitReason:
-                noValue: true
-              intent:
-                var: Task.intent
-              botFlow:
-                Deletelater:
-                  ver_latestPublished:
-                    inputs:
-                      Slot.billnumber1:
-                        noValue: true
-                      Slot.pizzaslot1:
-                        noValue: true
-                    outputs:
-                      Slot.billnumber1:
-                        noValue: true
-                      Slot.pizzaslot1:
-                        noValue: true
-          - switch:
-              name: Switch
-              evaluate:
-                firstTrue:
-                  cases:
-                    - case:
-                        value:
-                          exp: Task.intent == "Billing"
-                        actions:
-                          - playAudio:
-                              name: Play Audio
-                              audio:
-                                tts: you are in billing
-                    - case:
-                        value:
-                          exp: Task.intent == "Pizza"
-                        actions:
-                          - playAudio:
-                              name: Play Audio
-                              audio:
-                                tts: you are in Pizza
           - disconnect:
               name: Disconnect
