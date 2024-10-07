@@ -1,17 +1,18 @@
 inboundCall:
-  name: testHarsh
+  name: testHar
+  description: flow for abc
   division: Home
-  startUpRef: "/inboundCall/menus/menu[Main Menu_10]"
+  startUpRef: "/inboundCall/tasks/task[New Task 2_27]"
   defaultLanguage: en-us
   supportedLanguages:
     en-us:
       defaultLanguageSkill:
         noValue: true
       textToSpeech:
-        defaultEngine:
-          defaultVoice: true
+        Amazon Polly:
+          voice: Joanna
   initialGreeting:
-    tts: Hello, this is the initial greeting.
+    tts: Hello  , welcome to call flow
   settingsActionDefaults:
     playAudioOnSilence:
       timeout:
@@ -23,7 +24,8 @@ inboundCall:
           seconds: 40
     callData:
       processingPrompt:
-        noValue: true
+        lit:
+          name: PromptSystem.processing
     collectInput:
       noEntryTimeout:
         lit:
@@ -81,13 +83,13 @@ inboundCall:
       lit: 50
     asrCompanyDir: none
     asrEnabledOnFlow: true
-    suppressRecording: true
+    suppressRecording: false
   menus:
     - menu:
         name: Main Menu
         refId: Main Menu_10
         audio:
-          tts: Press 1 to connect to customer support , press 9 to disconnect
+          tts: Press 1 to Continue
         settingsMenu:
           extensionDialingMaxDelay:
             noValue: true
@@ -109,160 +111,249 @@ inboundCall:
         choices:
           - menuDisconnect:
               name: Disconnect
+              refId: Disconnect_11
               dtmf: digit_9
               globalDtmf: false
               globalSpeechRecTerms: false
-          - menuTask:
-              name: Customer Data
+          - menuTransferToAcd:
+              name: Transfer to ACD
               dtmf: digit_1
               globalDtmf: false
               globalSpeechRecTerms: false
-              task:
-                variables:
-                  - stringVariable:
-                      name: Task.CustomerEmail
-                      initialValue:
+              targetQueue:
+                lit:
+                  name: abc
+              priority:
+                lit: 7
+              preferredAgents:
+                noValue: true
+              languageSkill:
+                noValue: true
+              failureOutputs:
+                errorType:
+                  noValue: true
+                errorMessage:
+                  noValue: true
+              speechRecTerms:
+                en-us:
+                  terms:
+                    - connect
+        defaultChildMenuRef: "./choices/menuDisconnect[Disconnect_11]"
+  tasks:
+    - task:
+        name: New Task 1
+        refId: New Task 1_13
+        variables:
+          - stringVariable:
+              name: Task.Amount
+              initialValue:
+                noValue: true
+              isInput: false
+              isOutput: false
+          - currencyVariable:
+              name: Task.Currency
+              initialValue:
+                noValue: true
+              isInput: false
+              isOutput: false
+          - decimalVariable:
+              name: Task.Currencyvalue
+              initialValue:
+                noValue: true
+              isInput: false
+              isOutput: false
+          - stringVariable:
+              name: Task.Currencyvalue1
+              initialValue:
+                noValue: true
+              isInput: false
+              isOutput: false
+          - stringVariable:
+              name: Task.group
+              initialValue:
+                noValue: true
+              isInput: false
+              isOutput: false
+          - stringVariable:
+              name: Task.intent
+              initialValue:
+                noValue: true
+              isInput: false
+              isOutput: false
+        actions:
+          - updateData:
+              name: Update Data
+              statements:
+                - string:
+                    variable: Task.group
+                    value:
+                      lit: St Louis County
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudioTTS(Task.group), ToAudioBlank(500), ToAudioTTS(Task.group), ToAudioBlank(500), ToAudioTTS(Task.group)), true)
+          - callBotFlow:
+              name: Call Bot Flow
+              inputText:
+                noValue: true
+              exitReason:
+                noValue: true
+              intent:
+                var: Task.intent
+              botFlow:
+                Deletelater:
+                  ver_latestPublished:
+                    inputs:
+                      Slot.billnumber1:
                         noValue: true
-                      isInput: false
-                      isOutput: false
-                  - stringVariable:
-                      name: Task.CustomerFirstName
-                      initialValue:
+                      Slot.pizzaslot1:
                         noValue: true
-                      isInput: false
-                      isOutput: false
-                  - stringVariable:
-                      name: Task.CustomerInput
-                      initialValue:
+                    outputs:
+                      Slot.billnumber1:
                         noValue: true
-                      isInput: false
-                      isOutput: false
-                actions:
-                  - collectInput:
-                      name: Collect Input
-                      inputData:
-                        var: Task.CustomerInput
-                      digits:
-                        range:
-                          terminatingDtmf: "digit_#"
-                          min: 1
-                          max: 10
-                      interDigitTimeout:
+                      Slot.pizzaslot1:
                         noValue: true
-                      noEntryTimeout:
+          - disconnect:
+              name: Disconnect
+          - setScreenPop:
+              name: Set Screen Pop
+              screenPopScript:
+                delete_chetha:
+                  inputs:
+                    Dynamic:
+                      lit: "https://help.mypurecloud.com/articles/web-page-script-component/"
+          - transferToAcd:
+              name: Transfer to ACD
+              targetQueue:
+                lit:
+                  name: TestQueue
+              priority:
+                lit: 0
+              preferredAgents:
+                noValue: true
+              languageSkill:
+                noValue: true
+              failureOutputs:
+                errorType:
+                  noValue: true
+                errorMessage:
+                  noValue: true
+              outputs:
+                failure:
+                  actions:
+                    - disconnect:
+                        name: Disconnect
+          - updateData:
+              name: Update Data
+              statements:
+                - currency:
+                    variable: Task.Currency
+                    value:
+                      exp: MakeCurrency(10.50, "USD")
+                - string:
+                    variable: Task.Currencyvalue1
+                    value:
+                      lit: "105.10"
+                - string:
+                    variable: Task.Amount
+                    value:
+                      exp: Split(Task.Currencyvalue1,".")[0]
+          - playAudio:
+              name: Play Audio
+              audio:
+                exp: AudioPlaybackOptions(Append(ToAudioTTS("Your current values is"), ToAudioBlank(250), ToAudioTTS(Task.Amount), ToAudioTTS("Dollars")), true)
+          - disconnect:
+              name: Disconnect
+          - transferToAcd:
+              name: Transfer to ACD
+              targetQueue:
+                lit:
+                  name: abc
+              priority:
+                lit: 0
+              preferredAgents:
+                noValue: true
+              languageSkill:
+                noValue: true
+              failureOutputs:
+                errorType:
+                  noValue: true
+                errorMessage:
+                  noValue: true
+          - disconnect:
+              name: Disconnect
+    - task:
+        name: New Task 2
+        refId: New Task 2_27
+        variables:
+          - stringVariable:
+              name: Task.intent
+              initialValue:
+                noValue: true
+              isInput: false
+              isOutput: false
+        actions:
+          - setScreenPop:
+              name: Set Screen Pop
+              screenPopScript:
+                TestScript:
+                  inputs:
+                    CustomerName:
+                      lit: ""
+          - transferToFlowSecure:
+              name: Transfer to Secure Flow
+              targetFlow:
+                name: AgentSecureCallFlow
+              connectTimeout:
+                noValue: true
+              invocationData:
+                lit: ""
+              failureOutputs:
+                errorType:
+                  noValue: true
+                errorMessage:
+                  noValue: true
+          - callBotFlow:
+              name: Call Bot Flow
+              inputText:
+                noValue: true
+              exitReason:
+                noValue: true
+              intent:
+                var: Task.intent
+              botFlow:
+                Deletelater:
+                  ver_latestPublished:
+                    inputs:
+                      Slot.billnumber1:
                         noValue: true
-                      inputAudio:
-                        tts: "Please  enter your registered phone number followed by  # key"
-                      includeTerminatingDtmfInResultData: false
-                      acceptJustStar:
-                        lit: false
-                      acceptJustPound:
-                        lit: false
-                      verificationType: individualDigits
-                      outputs:
-                        success:
-                          actions:
-                            - callData:
-                                name: Call Data Action
-                                processingPrompt:
-                                  noValue: true
-                                timeout:
-                                  lit:
-                                    minutes: 1
-                                category:
-                                  Salesforce Data Actions:
-                                    dataAction:
-                                      Get Contact By Phone Number:
-                                        inputs:
-                                          PHONE_NUMBER:
-                                            exp: Task.CustomerInput
-                                        successOutputs:
-                                          Id:
-                                            noValue: true
-                                          FirstName:
-                                            var: Task.CustomerFirstName
-                                          LastName:
-                                            noValue: true
-                                          Phone:
-                                            noValue: true
-                                          HomePhone:
-                                            noValue: true
-                                          MobilePhone:
-                                            noValue: true
-                                          OtherPhone:
-                                            noValue: true
-                                          Email:
-                                            var: Task.CustomerEmail
-                                          MailingStreet:
-                                            noValue: true
-                                          MailingCity:
-                                            noValue: true
-                                          MailingState:
-                                            noValue: true
-                                          MailingPostalCode:
-                                            noValue: true
-                                          MailingCountry:
-                                            noValue: true
-                                outputs:
-                                  success:
-                                    actions:
-                                      - setScreenPop:
-                                          name: Set Screen Pop
-                                          screenPopScript:
-                                            Salesforce script:
-                                              inputs:
-                                                Customer Input:
-                                                  lit: 0
-                                                First Name:
-                                                  exp: Task.CustomerFirstName
-                                                Customer Email:
-                                                  exp: Task.CustomerEmail
-                                      - transferToAcd:
-                                          name: Transfer to ACD
-                                          targetQueue:
-                                            lit:
-                                              name: "401K"
-                                          preTransferAudio:
-                                            tts: Please wait for next available agent
-                                          failureTransferAudio:
-                                            tts: Error Please call back later
-                                          priority:
-                                            lit: 5
-                                          preferredAgents:
-                                            noValue: true
-                                          languageSkill:
-                                            noValue: true
-                                          failureOutputs:
-                                            errorType:
-                                              noValue: true
-                                            errorMessage:
-                                              noValue: true
-                                          outputs:
-                                            failure:
-                                              actions:
-                                                - disconnect:
-                                                    name: Disconnect
-                                  failure:
-                                    actions:
-                                      - playAudio:
-                                          name: Play Audio
-                                          audio:
-                                            tts: Sorry Call bak later
-                                      - disconnect:
-                                          name: Disconnect
-                                  timeout:
-                                    actions:
-                                      - playAudio:
-                                          name: Play Audio
-                                          audio:
-                                            tts: Sorry Call back later
-                                      - disconnect:
-                                          name: Disconnect
-                        failure:
-                          actions:
-                            - playAudio:
-                                name: Play Audio
-                                audio:
-                                  tts: Please Call back Later
-                            - disconnect:
-                                name: Disconnect
+                      Slot.pizzaslot1:
+                        noValue: true
+                    outputs:
+                      Slot.billnumber1:
+                        noValue: true
+                      Slot.pizzaslot1:
+                        noValue: true
+          - switch:
+              name: Switch
+              evaluate:
+                firstTrue:
+                  cases:
+                    - case:
+                        value:
+                          exp: Task.intent == "Billing"
+                        actions:
+                          - playAudio:
+                              name: Play Audio
+                              audio:
+                                tts: you are in billing
+                    - case:
+                        value:
+                          exp: Task.intent == "Pizza"
+                        actions:
+                          - playAudio:
+                              name: Play Audio
+                              audio:
+                                tts: you are in Pizza
+          - disconnect:
+              name: Disconnect
