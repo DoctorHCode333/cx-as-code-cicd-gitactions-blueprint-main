@@ -1,9 +1,5 @@
 inboundCall:
-<<<<<<< HEAD
   name: testHarsh
-=======
-  name: testhar
->>>>>>> b51e2b4d036a69662d0df003cf16986150b9f91b
   division: Home
   startUpRef: "/inboundCall/menus/menu[Main Menu_10]"
   defaultLanguage: en-us
