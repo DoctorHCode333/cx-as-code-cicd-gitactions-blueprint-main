@@ -13,7 +13,7 @@ terraform {
 # Description:  
 #
 # Creates a new web-based data integration and then adds a data action that calls out to the AWS API Gateway endpoint and 
-# Lambda that is performing our email-classification.
+# Lambda that is performing our email-classification. 
 #
 ### 
 
