@@ -21,7 +21,7 @@ provider "genesyscloud" {
   sdk_debug = true
 }
 
-#Thiss is an example of creating queues using a remote modules.  Remote modules allow you to re-use Terraform/CX as Code component across multiple Terraform
+#Thisss is an example of creating queues using a remote modules.  Remote modules allow you to re-use Terraform/CX as Code component across multiple Terraform
 #configs.
 
 # module "classifier_queues" {
