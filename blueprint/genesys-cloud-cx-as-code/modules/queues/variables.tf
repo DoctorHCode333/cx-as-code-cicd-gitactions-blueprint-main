@@ -5,6 +5,7 @@ variable "classifier_queue_names" {
 
 variable "classifier_queue_members" {
   type        = list(string)
+  default = []
   description = "The member to assign to the queue"
 }
 

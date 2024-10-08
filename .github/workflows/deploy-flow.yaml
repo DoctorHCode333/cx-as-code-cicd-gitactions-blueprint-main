@@ -43,7 +43,7 @@ jobs:
       GENESYSCLOUD_ARCHY_REGION: "mypurecloud.com"
       GENESYSCLOUD_EMAIL_DOMAIN: "devengagedev"
       GENESYSCLOUD_EMAIL_DOMAIN_REGION: "pure.cloud"
-      TF_WORKSPACE: "dev"
+      TF_WORKSPACE: "2"
     steps:
       - uses: actions/checkout@v2
       - uses: ./.github/actions/genesys-cloud-dev-tools
