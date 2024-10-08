@@ -45,6 +45,7 @@ resource "genesyscloud_integration_action" "LookupQueueName" {
       }
     }
   })
+  
   contract_output = jsonencode({
     "type" = "object",
     "required" = [
