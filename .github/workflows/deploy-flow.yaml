@@ -53,7 +53,7 @@ jobs:
       - uses: ./.github/actions/genesys-cloud-apply-terraform
       - uses: ./.github/actions/genesys-cloud-publish-archy-flow
         with:
-          architect-flow-path: $GITHUB_WORKSPACE/blueprint/genesys-cloud-architect-flows/testFlowHarsh.yaml
+          architect-flow-path: $GITHUB_WORKSPACE/blueprint/genesys-cloud-architect-flows/myTestFlow.yaml
           architect-results-path: $GITHUB_WORKSPACE/output/results.json
       # - uses: ./.github/actions/genesys-cloud-create-email-domain-route
 

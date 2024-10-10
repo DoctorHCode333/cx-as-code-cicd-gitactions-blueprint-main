@@ -21,7 +21,7 @@ provider "genesyscloud" {
   sdk_debug = true
 }
 
-#This is an example of creating queues using a remote modules.  Remote modules allow you to re-use Terraform/CX as Code component across multiple Terraform
+#Thiss is an example of creating queues using a remote modules.  Remote modules allow you to re-use Terraform/CX as Code component across multiple Terraform
 #configs.
 
 # module "classifier_queues" {
@@ -42,8 +42,6 @@ module "classifier_queues" {
 #   genesys_email_domain = var.genesys_email_domain
 # }
 
-# module "classifier_data_actions" {
-#   source             = "./modules/data_actions"
-#   classifier_url     = var.classifier_url
-#   classifier_api_key = var.classifier_api_key
-# }
+module "classifier_data_actions" {
+  source             = "./modules/data_actions"
+}
