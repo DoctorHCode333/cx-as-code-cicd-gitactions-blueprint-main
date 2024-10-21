@@ -21,6 +21,16 @@ provider "genesyscloud" {
   sdk_debug = true
 }
 
+resource "genesyscloud_integration" "PureCloud_Data_Actions" {
+  intended_state   = "ENABLED"
+  integration_type = "purecloud-data-actions"
+  config {
+    name       = "PureCloud_Data_Actions"
+    properties = jsonencode({})
+    advanced   = jsonencode({})
+    notes      = "Used to retrieve estimated wait time for a specific media type and queue"
+  }
+}
 
 # module "classifier_queues" {
 #   source                   = "git::https://github.com/GenesysCloudDevOps/genesys-cloud-queues-demo.git?ref=main"
@@ -42,4 +52,5 @@ module "classifier_queues" {
 
 module "classifier_data_actions" {
   source             = "./modules/data_actions"
+  intg_name = "PureCloud_Data_Actions"
 }
