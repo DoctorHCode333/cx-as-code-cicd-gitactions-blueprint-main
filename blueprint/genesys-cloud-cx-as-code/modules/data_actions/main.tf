@@ -56,9 +56,9 @@ resource "genesyscloud_integration_action" "waitTime" {
 
   # Configure the request
   config_request {
-    request_url_template = "/api/v2/routing/queues/${input.QUEUE_ID}/mediatypes/${input.MEDIA_TYPE}/estimatedwaittime"
+    request_url_template = "/api/v2/routing/queues/{input.QUEUE_ID}/mediatypes/$${input.MEDIA_TYPE}/estimatedwaittime"
     request_type         = "GET"
-    request_template     = "${input.rawRequest}"
+    request_template     = "$${input.rawRequest}"
     headers = {
       "Content-Type" = "application/x-www-form-urlencoded"
       "UserAgent"    = "PureCloudIntegrations/1.0"
@@ -71,7 +71,7 @@ resource "genesyscloud_integration_action" "waitTime" {
       "estimated_wait_time" = "$.results[0].estimatedWaitTimeSeconds"
     }
     translation_map_defaults = {}
-    success_template         = "{\n   \"estimated_wait_time\": ${estimated_wait_time}\n}"
+    success_template         = "{\n   \"estimated_wait_time\": $${estimated_wait_time}\n}"
   }
 }
 
