@@ -5,7 +5,7 @@
 #  It should be noted that in our example here we are using Terraform cloud as a back end with individual
 #  workspaces for each environment. This is set in the Terraform script that is being executed
 #  (e.g.  $GITHUB_WORKSPACE/blueprint/genesys-cloud-cx-as-code).
-#
+#terraform import genesyscloud_integration.PureCloud_Data_Actions f689b566-439e-4574-b60a-0d60a006822e
 ###
 name: "Invoke Terraform with Auto Apply"
 description: "Invoke Terraform with Auto Apply"
@@ -15,7 +15,6 @@ runs:
     - run: |
         cd $GITHUB_WORKSPACE/blueprint/genesys-cloud-cx-as-code
         terraform init 
-        terraform import genesyscloud_integration.PureCloud_Data_Actions f689b566-439e-4574-b60a-0d60a006822e
         terraform apply --auto-approve
         cd $GITHUB_WORKSPACE
       shell: bash

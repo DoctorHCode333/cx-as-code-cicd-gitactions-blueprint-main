@@ -7,13 +7,22 @@ terraform {
 }
 
 # Define the integration for the data action
-
+resource "genesyscloud_integration" "PureCloud_Data_Actions" {
+  intended_state   = "ENABLED"
+  integration_type = "purecloud-data-actions"
+  config {
+    name       = "PureCloud_Data_Actions"
+    properties = jsonencode({})
+    advanced   = jsonencode({})
+    notes      = "Used to retrieve estimated wait time for a specific media type and queue"
+  }
+}
 
 # Define the data action for estimated wait time
 resource "genesyscloud_integration_action" "waitTime" {
   name           = "Get Estimated Wait Time"
-  category       = var.intg_name
-  integration_id = "f689b566-439e-4574-b60a-0d60a006822e"
+  category       = "PureCloud_Data_Actions"
+  integration_id = genesyscloud_integration.PureCloud_Data_Actions.id
   secure         = false
 
   # Define the input contract
