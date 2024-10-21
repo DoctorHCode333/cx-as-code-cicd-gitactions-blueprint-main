@@ -7,7 +7,7 @@ terraform {
 }
 
 # Define the integration for the data action
-# resource "genesyscloud_integration" "waitTimeIntegration" {
+# resource "genesyscloud_integration" "PureCloud_Data_Actions" {
 #   intended_state   = "ENABLED"
 #   integration_type = "purecloud-data-actions"
 #   config {
