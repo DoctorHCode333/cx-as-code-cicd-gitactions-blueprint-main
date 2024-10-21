@@ -21,8 +21,8 @@ terraform {
 # Define the data action for estimated wait time
 resource "genesyscloud_integration_action" "waitTime" {
   name           = "Get Estimated Wait Time"
-  category       = "PureCloud Data Actions"
-  integration_id = genesyscloud_integration.waitTimeIntegration.id
+  category       = "PureCloud_Data_Actions"
+  integration_id = genesyscloud_integration.PureCloud_Data_Actions.id
   secure         = false
 
   # Define the input contract
